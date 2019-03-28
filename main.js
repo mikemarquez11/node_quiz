@@ -5,7 +5,13 @@ console.log('Quiz');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  prompt: 'quiz> '
+  prompt: 'quiz> ',
+  completer: (line) => {
+  const completions = 'h help add delete edit list test p play credits q quit'.split(' ');
+  const hits = completions.filter((c) => c.startsWith(line));
+  // show all completions if none found
+  return [hits.length ? hits : completions, line];
+  }
 });
 
 rl.prompt();
