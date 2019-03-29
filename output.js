@@ -20,7 +20,7 @@ const errorLog = (emsg) => {
   console.log(`${colorize('Error', 'red')}: ${colorize(colorize(emsg, 'red'), 'bgYellowBright')}`);
 }
 
-exports = module.exports {
+exports = module.exports = {
   colorize,
   log,
   bigLog,
