@@ -3,6 +3,8 @@ const model = require('./model');
 
 const {log, bigLog, errorLog, colorize} = require('./output');
 
+const cmds = require('./cmd');
+
 //Mensaje Inicial
 bigLog('Node Quiz','green');
 
@@ -30,36 +32,36 @@ rl.on('line', (line) => {
       break;
     case 'help':
     case 'h':
-      helpCmd();
+      cmds.helpCmd(rl);
       break;
     case 'quit':
     case 'q':
-      quitCmd();
+      cmds.quitCmd(rl);
       break;
     case 'add':
-      addCmd();
+      cmds.addCmd(rl);
       break;
     case 'list':
-      listCmd();
+      cmds.listCmd(rl);
       break;
     case 'show':
-      showCmd(args[1]);
+      cmds.showCmd(rl, args[1]);
       break;
     case 'test':
-      testCmd(args[1]);
+      cmds.testCmd(rl, args[1]);
       break;
     case 'play':
     case 'p':
-      playCmd();
+      cmds.playCmd(rl);
       break;
     case 'delete':
-      deleteCmd(args[1]);
+      cmds.deleteCmd(rl, args[1]);
       break;
     case 'edit':
-      editCmd(args[1]);
+      cmds.editCmd(rl, args[1]);
       break;
     case 'credits':
-      creditsCmd();
+      cmds.creditsCmd(r1);
       break;
 
     default:
@@ -73,66 +75,3 @@ rl.on('line', (line) => {
   log('Adios!');
   process.exit(0);
 });
-
-/**
-* It shows help
-*/
-const helpCmd = () => {
-  log('Comandos: ');
-  log(' h|help - Muestra esta ayuda');
-  log(' list - Listar los quizzes existentes');
-  log(' show <id> - Muestra la pregunta y la respuesta el quiz indicado');
-  log(' add - Anadir un nuevo quiz interactivamente');
-  log(' delete <id> - Borrar el quiz indicado');
-  log(' edit <id> - Editar el quiz indicado');
-  log(' test <id> - Probar el quiz indicado');
-  log(' p|play - Jugar a preguntar aleatoriamente todos los quizzes');
-  log(' credits - Creditos');
-  log(' q|quit - Salir del programa');
-  rl.prompt();
-};
-
-const listCmd = () => {
-  log('Listar todos los quizzes existentes', 'red');
-  rl.prompt();
-}
-
-const showCmd = (id) => {
-  log('Mostrar el quiz indicado', 'red');
-  rl.prompt();
-}
-
-const addCmd = () => {
-  log('Anadir un nuevo quiz', 'red');
-  rl.prompt();
-}
-
-const deleteCmd = (id) => {
-  log('Borrar el quiz indicado', 'red');
-  rl.prompt();
-}
-
-const editCmd = (id) => {
-  log('Editar el quiz indicado', 'red');
-  rl.prompt();
-}
-
-const creditsCmd = () => {
-  log('Autores de la practica:');
-  log('Miguel Angel Marquez Leon', 'green');
-  rl.prompt();
-}
-
-const playCmd = () => {
-  log('Jugar');
-  rl.prompt();
-}
-
-const testCmd = (id) => {
-  log('Probar el quiz indicado');
-  rl.prompt();
-}
-
-const quitCmd = () => {
-  rl.close();
-}
