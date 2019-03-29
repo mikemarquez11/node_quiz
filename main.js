@@ -2,6 +2,8 @@ const readline = require('readline');
 const figlet = require('figlet');
 const chalk = require('chalk');
 
+const model = require('./model')
+
 const colorize = (msg, color) => {
   if (typeof color !== "undefined"){
     msg = chalk[color].bold(msg);
@@ -21,79 +23,7 @@ const errorLog = (emsg) => {
   console.log(`${colorize('Error', 'red')}: ${colorize(colorize(emsg, 'red'), 'bgYellowBright')}`);
 }
 
-// Modelo de datos
-let quizzes = [{
-  question: 'Capital de Italia',
-  answer: 'Roma'
-},
-{
-  question: 'Capital de Francia',
-  answer: 'París'
-},
-{
-  question: 'Capital de España',
-  answer: 'Madrid'
-},
-{
-  question: 'Capital de Portugal',
-  answer: 'Lisboa'
-}];
 
-//Devuelve el numero total de preguntas existentes
-const count = () => quizzes.length;
-
-/**
-* Anade un nuevo quizzes
-*
-* param question String con la preguntar
-* param answer String con la respuesta
-*/
-const add = (question, answer) => {
-    quizzes.push({
-      question: (question || '').trim(),
-      answer: (answer || '').trim()
-    });
-};
-
-/**
-* Actualiza el quiz situado en la posicion index
-*
-* param id Clave que identifica el quiz a actualizar
-* param question String con la pregunta
-* param answer String con la respuesta
-*/
-const update = (id, question, answer) => {
-  const quiz = quizzes[id];
-  if (typeof quiz === undefined){
-    throw new Error('El valor del parametro id no es valido');
-  }
-  quizzes.splice(id, 1, {
-    question: (question || '').trim(),
-    answer: (answer || '').trim()
-  });
-};
-
-//Devuelve todos los quizzes existentes
-const getAll = () => JSON.parse(JSON.stringify(quizzes));
-
-//Devuelve un clon del quiz almacenado en la posicion dada
-const getByIndex = (id) => {
-  const quiz = quizzes[id];
-  if (typeof quiz === undefined){
-    throw new Error('El valor del parametro id no es valido');
-  }
-  return JSON.parse(JSON.stringify(quiz));
-}
-
-//Elimina el quiz situado en la posicion dada
-const deleteByIndex = (id) => {
-  
-  const quiz = quizzes[id];
-  if (typeof quiz === undefined){
-    throw new Error(`El valor del parametro id no es valido`);
-  }
-  quizzes.splice(id, 1);
-}
 
 //Mensaje Inicial
 bigLog('Node Quiz','green');
