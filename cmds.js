@@ -1,4 +1,5 @@
 const {log, bigLog, errorLog, colorize} = require('./output');
+const readline = require('readline');
 
 const model = require('./model');
 
@@ -22,28 +23,77 @@ exports.helpCmd = (rl) => {
 };
 
 exports.listCmd = (rl) => {
-  log('Listar todos los quizzes existentes', 'red');
+  model.getAll().forEach((quiz, id) => {
+    log(`[${ colorize(id, 'magenta') }]: ${ quiz.question }`);
+  });
+
   rl.prompt();
 }
 
 exports.showCmd = (rl, id) => {
-  log('Mostrar el quiz indicado', 'red');
+  if (typeof id === 'undefined'){
+    errorLog(`Falta el parametro id.`);
+  } else {
+    try {
+      const quiz = model.getByIndex(id);
+      log(` [${ colorize(id, 'magenta') }]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
+    }
+    catch (error) {
+      errorLog(error.message);
+    }
+  }
+
   rl.prompt();
 }
 
 exports.addCmd = (rl) => {
-  log('Anadir un nuevo quiz', 'red');
-  rl.prompt();
+  rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
+    rl.question(colorize(' Introduzca la respuesta: ', 'red'), answer => {
+      model.add(question, answer);
+      log(` ${colorize('Se ha anadido', 'magenta')}: ${question} ${colorize('=>', 'magenta')} ${answer}`);
+      rl.prompt();
+    })
+  })
 }
 
 exports.deleteCmd = (rl, id) => {
-  log('Borrar el quiz indicado', 'red');
+  if (typeof id === 'undefined'){
+    errorLog(`Falta el parametro id.`);
+  } else {
+    try {
+      model.deleteByIndex(id);
+    }
+    catch (error) {
+      errorLog(error.message);
+    }
+  }
+
   rl.prompt();
 }
 
 exports.editCmd = (rl, id) => {
-  log('Editar el quiz indicado', 'red');
-  rl.prompt();
+  if (typeof id === 'undefined') {
+    errorLog(`Falta el parametro id.`);
+    rl.prompt();
+  } else {
+    try {
+      const quiz = model.getByIndex(id);
+      log('MUNDO');
+      process.stdoutisTTY && setTimeout(() => { rl.write(quiz.question)}, 0);
+      rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
+        process.stdoutisTTY && setTimeout(() => { rl.write(quiz.answer)}, 0);
+        rl.question(colorize(' Introduza la respuesta: ', 'red'), answer => {
+          model.update(id, question, answer);
+          log(` Se ha cambiado el quiz ${colorize(id, 'magenta')} por: ${question} ${colorize('=>', 'magenta')} ${answer}`);
+          rl.prompt();
+        });
+      });
+    }
+      catch (error) {
+          errorLog(error.message);
+          rl.prompt();
+      }
+  }
 }
 
 exports.creditsCmd = (rl) => {
