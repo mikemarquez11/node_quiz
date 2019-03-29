@@ -3,7 +3,7 @@ const model = require('./model');
 
 const {log, bigLog, errorLog, colorize} = require('./output');
 
-const cmds = require('./cmd');
+const cmds = require('./cmds');
 
 //Mensaje Inicial
 bigLog('Node Quiz','green');
@@ -13,7 +13,7 @@ const rl = readline.createInterface({
   output: process.stdout,
   prompt: colorize('quiz > ', 'blue'),
   completer: (line) => {
-  const completions = 'h help add delete edit list test p play credits q quit'.split(' ');
+  const completions = 'h help add delete edit list test p play credits q quit show'.split(' ');
   const hits = completions.filter((c) => c.startsWith(line));
   // show all completions if none found
   return [hits.length ? hits : completions, line];
@@ -61,7 +61,7 @@ rl.on('line', (line) => {
       cmds.editCmd(rl, args[1]);
       break;
     case 'credits':
-      cmds.creditsCmd(r1);
+      cmds.creditsCmd(rl);
       break;
 
     default:
