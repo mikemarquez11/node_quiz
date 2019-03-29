@@ -79,9 +79,9 @@ exports.editCmd = (rl, id) => {
     try {
       const quiz = model.getByIndex(id);
       log('MUNDO');
-      process.stdoutisTTY && setTimeout(() => { rl.write(quiz.question)}, 0);
+      process.stdout.isTTY && setTimeout(() => { rl.write(quiz.question)}, 0);
       rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
-        process.stdoutisTTY && setTimeout(() => { rl.write(quiz.answer)}, 0);
+        process.stdout.isTTY && setTimeout(() => { rl.write(quiz.answer)}, 0);
         rl.question(colorize(' Introduza la respuesta: ', 'red'), answer => {
           model.update(id, question, answer);
           log(` Se ha cambiado el quiz ${colorize(id, 'magenta')} por: ${question} ${colorize('=>', 'magenta')} ${answer}`);
