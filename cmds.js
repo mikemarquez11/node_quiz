@@ -107,8 +107,29 @@ exports.playCmd = (rl) => {
 }
 
 exports.testCmd = (rl, id) => {
-  log('Probar el quiz indicado');
-  rl.prompt();
+  if (typeof id === 'undefined'){
+    errorLog(`Falta el parametro id.`);
+    rl.prompt();
+  }
+    else {
+      try {
+        const quiz = model.getByIndex(id);
+        rl.question(colorize(`${quiz.question}: `, 'red'), answer  => {
+          const answerLow = answer.toLowerCase();
+          if(answerLow.trim() === quiz.answer.toLowerCase()){
+            bigLog('Correcto');
+            rl.prompt();
+          } else {
+            bigLog('Incorrecto','red');
+            rl.prompt();
+          }
+        });
+      }
+      catch (error) {
+          errorLog(error.message);
+          rl.prompt();
+      }
+    }
 }
 
 exports.quitCmd = (rl) => {
