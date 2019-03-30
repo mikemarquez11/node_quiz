@@ -1,3 +1,7 @@
+const fs = require('fs');
+
+const DB_FILENAME = 'quizzes.json';
+
 // Modelo de datos
 let quizzes = [{
   question: 'Capital de Italia',
@@ -16,6 +20,33 @@ let quizzes = [{
   answer: 'Lisboa'
 }];
 
+//Carga las preguntas guardadas en el fichero
+const load = () => {
+  fs.readFile(DB_FILENAME, (err, data) => {
+    if (err){
+      if(err.code === 'ENOENT'){
+        save();
+        return;
+      }
+      throw err;
+    }
+    let json = JSON.parse(data);
+
+    if(json){
+      quizzes = json;
+    }
+  });
+}
+
+//Guarda las preguntas en el fichero
+const save = () => {
+  fs.writeFile(DB_FILENAME,
+  JSON.stringify(quizzes),
+  err => {
+    if (err) throw err;
+  });
+};
+
 //Devuelve el numero total de preguntas existentes
 exports.count = () => quizzes.length;
 
@@ -30,6 +61,7 @@ exports.add = (question, answer) => {
       question: (question || '').trim(),
       answer: (answer || '').trim()
     });
+    save();
 };
 
 /**
@@ -48,6 +80,7 @@ exports.update = (id, question, answer) => {
     question: (question || '').trim(),
     answer: (answer || '').trim()
   });
+  save();
 };
 
 //Devuelve todos los quizzes existentes
@@ -70,4 +103,8 @@ exports.deleteByIndex = (id) => {
     throw new Error(`El valor del parametro id no es valido`);
   }
   quizzes.splice(id, 1);
+  save();
 }
+
+//Carga los quizzes almacenados en el fichero
+load();
