@@ -101,9 +101,54 @@ exports.creditsCmd = (rl) => {
   rl.prompt();
 }
 
+const getRandomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 exports.playCmd = (rl) => {
-  log('Jugar');
-  rl.prompt();
+  let score = 0;
+  let leftQuizzes = [];
+  const quizzes = model.getAll();
+  for(quiz in quizzes){
+    leftQuizzes[quiz] = quiz;
+  }
+  console.log(leftQuizzes);
+const playOne = () => {
+  if (typeof leftQuizzes === 'undefined' || leftQuizzes.length === 0){
+    log(`Has finalizado todas las preguntas \n tu puntuacion es: ${score}`, 'green');
+    log(`${colorize('add', 'green')} para agregar una nueva pregunta`);
+    log(`${colorize('help', 'green')} para ver todos los comandos disponibles`);
+    rl.prompt();
+  }
+  else {
+    try {
+      let id = getRandomInt(0, leftQuizzes.length);
+      console.log(id);
+      leftQuizzes.splice(id, 1);
+      console.log(leftQuizzes);
+      const quiz = model.getByIndex(id);
+      rl.question(`${ quiz.question } `, answer => {
+        if(answer === quiz.answer){
+          bigLog('Correcto', 'green');
+          score++;
+          log(`Puntuacion: ${ score }`);
+          playOne();
+        }
+        else {
+          bigLog('Incorrecto', 'red');
+          console.log(score);
+          rl.prompt();
+        }
+     });
+   }
+    catch (error){
+      errorLog(error.message);
+      rl.prompt();
+    }
+  }
+
+  }// const PlayOne
+ playOne();
 }
 
 exports.testCmd = (rl, id) => {
@@ -117,10 +162,12 @@ exports.testCmd = (rl, id) => {
         rl.question(colorize(`${quiz.question}: `, 'red'), answer  => {
           const answerLow = answer.toLowerCase();
           if(answerLow.trim() === quiz.answer.toLowerCase()){
-            bigLog('Correcto');
+            log(`Su respuesta es: `);
+            bigLog('Correcta', 'green');
             rl.prompt();
           } else {
-            bigLog('Incorrecto','red');
+            log(`Su respuesta es: `);
+            bigLog('Incorrecta','red');
             rl.prompt();
           }
         });
