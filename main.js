@@ -65,8 +65,8 @@ rl.on('line', (line) => {
       break;
 
     default:
-      console.log(`Comando desconocido: '${colorize(cmd, 'red')}'`);
-      console.log(`${colorize('help', 'green')} para ver todos los comandos disponibles`);
+      log(`Comando desconocido: '${colorize(cmd, 'red')}'`);
+      log(`${colorize('help', 'green')} para ver todos los comandos disponibles`);
       rl.prompt();
       break;
   }
