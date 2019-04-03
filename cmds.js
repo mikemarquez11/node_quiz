@@ -105,6 +105,25 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function shuffle(array) {
+    var i = array.length,
+        j = 0,
+        temp;
+
+    while (i--) {
+
+        j = Math.floor(Math.random() * (i+1));
+
+        // swap randomly chosen element with current element
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+
+    }
+
+    return array;
+}
+
 exports.playCmd = (rl) => {
   let score = 0;
   let leftQuizzes = [];
@@ -112,23 +131,21 @@ exports.playCmd = (rl) => {
   for(quiz in quizzes){
     leftQuizzes[quiz] = quiz;
   }
-  console.log(leftQuizzes);
 const playOne = () => {
   if (typeof leftQuizzes === 'undefined' || leftQuizzes.length === 0){
-    log(`Has finalizado todas las preguntas \n tu puntuacion es: ${score}`, 'green');
+    log(`Has finalizado todas las preguntas tu puntuacion es: ${score}`, 'green');
     log(`${colorize('add', 'green')} para agregar una nueva pregunta`);
     log(`${colorize('help', 'green')} para ver todos los comandos disponibles`);
     rl.prompt();
   }
   else {
     try {
-      let id = getRandomInt(0, leftQuizzes.length);
-      console.log(id);
-      leftQuizzes.splice(id, 1);
-      console.log(leftQuizzes);
+      let ranNums = shuffle(leftQuizzes);
+      let id = ranNums[ranNums.length -1];
+      ranNums.pop();
       const quiz = model.getByIndex(id);
       rl.question(`${ quiz.question } `, answer => {
-        if(answer === quiz.answer){
+        if(answer.toLowerCase().trim() === quiz.answer.toLowerCase()){
           bigLog('Correcto', 'green');
           score++;
           log(`Puntuacion: ${ score }`);
@@ -136,7 +153,7 @@ const playOne = () => {
         }
         else {
           bigLog('Incorrecto', 'red');
-          console.log(score);
+          log(`Puntuacion: ${ score }`);
           rl.prompt();
         }
      });
