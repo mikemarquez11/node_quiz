@@ -157,47 +157,39 @@ function shuffle(array) {
 }
 
 exports.playCmd = (rl) => {
-  let score = 0;
-  let leftQuizzes = [];
-  const quizzes = model.getAll();
-  for(quiz in quizzes){
-    leftQuizzes[quiz] = quiz;
-  }
-const playOne = () => {
-  if (typeof leftQuizzes === 'undefined' || leftQuizzes.length === 0){
-    log(`Has finalizado todas las preguntas tu puntuacion es: ${score}`, 'green');
-    log(`${colorize('add', 'green')} para agregar una nueva pregunta`);
-    log(`${colorize('help', 'green')} para ver todos los comandos disponibles`);
-    rl.prompt();
-  }
-  else {
-    try {
-      let ranNums = shuffle(leftQuizzes);
-      let id = ranNums[ranNums.length -1];
-      ranNums.pop();
-      const quiz = model.getByIndex(id);
-      rl.question(`${ quiz.question } `, answer => {
-        if(answer.toLowerCase().trim() === quiz.answer.toLowerCase()){
-          bigLog('Correcto', 'green');
-          score++;
-          log(`Puntuacion: ${ score }`);
-          playOne();
-        }
-        else {
-          bigLog('Incorrecto', 'red');
-          log(`Puntuacion: ${ score }`);
-          rl.prompt();
-        }
-     });
-   }
-    catch (error){
-      errorLog(error.message);
-      rl.prompt();
-    }
-  }
+    let score = 0;
+    const quizzes = model.getAll();
+    const playOne = () => {
+            if (typeof quizzes === 'undefined' || quizzes.length === 0) {
+                log(`Has finalizado todas las preguntas tu puntuacion es: ${score}`, 'green');
+                log(`${colorize('add', 'green')} para agregar una nueva pregunta`);
+                log(`${colorize('help', 'green')} para ver todos los comandos disponibles`);
+                rl.prompt();
+            } else {
+                try {
+                    let id = Math.floor(Math.random() * quizzes.length);
+                    const quiz = quizzes[id];
+                    rl.question(`${quiz.question} `, answer => {
+                        if (answer.toLowerCase().trim() === quiz.answer.toLowerCase()) {
+                            bigLog('Correcto', 'green');
+                            score++;
+                            log(`Aciertos: ${score}`);
+                            quizzes.splice(id,1);
+                            playOne();
+                        } else {
+                            bigLog('Incorrecto', 'red');
+                            log(`Fin de Puntuacion: ${score}`);
+                            rl.prompt();
+                        }
+                    });
+                } catch (error) {
+                    errorlog(error.message);
+                    rl.prompt();
+                }
+            }
 
-  }// const PlayOne
- playOne();
+        } // const PlayOne
+    playOne();
 }
 
 /**
