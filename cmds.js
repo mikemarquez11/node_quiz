@@ -1,5 +1,4 @@
 const {log, bigLog, errorLog, colorize} = require('./output');
-const readline = require('readline');
 
 const model = require('./model');
 
@@ -22,6 +21,11 @@ exports.helpCmd = (rl) => {
   rl.prompt();
 };
 
+/**
+ * Lista todos los quizzes existentes en el modelo.
+ *
+ * @param rl Objeto readline usado para implementar el CLI.
+ */
 exports.listCmd = (rl) => {
   model.getAll().forEach((quiz, id) => {
     log(`[${ colorize(id, 'magenta') }]: ${ quiz.question }`);
@@ -30,6 +34,12 @@ exports.listCmd = (rl) => {
   rl.prompt();
 }
 
+/**
+ * Muestra el quiz indicado en el parámetro: la pregunta y la respuesta.
+ *
+ * @param rl Objeto readline usado para implementar el CLI.
+ * @param id Clave del quiz a mostrar.
+ */
 exports.showCmd = (rl, id) => {
   if (typeof id === 'undefined'){
     errorLog(`Falta el parametro id.`);
@@ -46,6 +56,17 @@ exports.showCmd = (rl, id) => {
   rl.prompt();
 }
 
+/**
+ * Añade un nuevo quiz al módelo.
+ * Pregunta interactivamente por la pregunta y por la respuesta.
+ *
+ * Hay que recordar que el funcionamiento de la funcion rl.question es asíncrono.
+ * El prompt hay que sacarlo cuando ya se ha terminado la interacción con el usuario,
+ * es decir, la llamada a rl.prompt() se debe hacer en la callback de la segunda
+ * llamada a rl.question.
+ *
+ * @param rl Objeto readline usado para implementar el CLI.
+ */
 exports.addCmd = (rl) => {
   rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
     rl.question(colorize(' Introduzca la respuesta: ', 'red'), answer => {
@@ -56,6 +77,12 @@ exports.addCmd = (rl) => {
   })
 }
 
+/**
+ * Borra un quiz del modelo.
+ *
+ * @param rl Objeto readline usado para implementar el CLI.
+ * @param id Clave del quiz a borrar en el modelo.
+ */
 exports.deleteCmd = (rl, id) => {
   if (typeof id === 'undefined'){
     errorLog(`Falta el parametro id.`);
@@ -71,6 +98,17 @@ exports.deleteCmd = (rl, id) => {
   rl.prompt();
 }
 
+/**
+ * Edita un quiz del modelo.
+ *
+ * Hay que recordar que el funcionamiento de la funcion rl.question es asíncrono.
+ * El prompt hay que sacarlo cuando ya se ha terminado la interacción con el usuario,
+ * es decir, la llamada a rl.prompt() se debe hacer en la callback de la segunda
+ * llamada a rl.question.
+ *
+ * @param rl Objeto readline usado para implementar el CLI.
+ * @param id Clave del quiz a editar en el modelo.
+ */
 exports.editCmd = (rl, id) => {
   if (typeof id === 'undefined') {
     errorLog(`Falta el parametro id.`);
@@ -93,12 +131,6 @@ exports.editCmd = (rl, id) => {
           rl.prompt();
       }
   }
-}
-
-exports.creditsCmd = (rl) => {
-  log('Autores de la practica:');
-  log('Miguel Angel Marquez Leon', 'green');
-  rl.prompt();
 }
 
 const getRandomInt = (min, max) => {
@@ -168,6 +200,12 @@ const playOne = () => {
  playOne();
 }
 
+/**
+ * Prueba un quiz, es decir, hace una pregunta del modelo a la que debemos contestar.
+ *
+ * @param rl Objeto readline usado para implementar el CLI.
+ * @param id Clave del quiz a probar.
+ */
 exports.testCmd = (rl, id) => {
   if (typeof id === 'undefined'){
     errorLog(`Falta el parametro id.`);
@@ -194,6 +232,17 @@ exports.testCmd = (rl, id) => {
           rl.prompt();
       }
     }
+}
+
+/**
+ * Muestra los nombres de los autores de la práctica.
+ *
+ * @param rl Objeto readline usado para implementar el CLI.
+ */
+exports.creditsCmd = (rl) => {
+  log('Autores de la practica:');
+  log('Miguel Angel Marquez Leon', 'green');
+  rl.prompt();
 }
 
 exports.quitCmd = (rl) => {
